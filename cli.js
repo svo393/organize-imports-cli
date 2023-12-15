@@ -4,7 +4,7 @@ const {
     Project,
     IndentationText,
     NewLineKind,
-    QuoteKind
+    QuoteKind,
   } = require("ts-morph"),
   tsconfig = require("tsconfig"),
   editorconfig = require("editorconfig"),
@@ -18,7 +18,7 @@ if (process.argv.length < 3) {
   printUsage();
 } else {
   main(
-    process.argv.slice(2).filter(arg => arg !== "--list-different"),
+    process.argv.slice(2).filter((arg) => arg !== "--list-different"),
     process.argv.includes("--list-different")
   );
 }
@@ -33,11 +33,11 @@ function main(filePaths, listDifferent) {
   const logger = listDifferent
     ? {
         write() {},
-        writeLine() {}
+        writeLine() {},
       }
     : {
         write: process.stdout.write.bind(process.stdout),
-        writeLine: console.log.bind(console)
+        writeLine: console.log.bind(console),
       };
 
   logger.writeLine(chalk`{yellowBright Organizing imports...}`);
@@ -77,7 +77,7 @@ function main(filePaths, listDifferent) {
         projects[tsConfigFilePath] = {
           files: "all",
           project,
-          detectNewLineKind
+          detectNewLineKind,
         };
         continue;
       }
@@ -88,7 +88,7 @@ function main(filePaths, listDifferent) {
         projects[tsConfigFilePath] = {
           files: [sourceFile],
           project,
-          detectNewLineKind
+          detectNewLineKind,
         };
         continue;
       }
@@ -102,9 +102,9 @@ function main(filePaths, listDifferent) {
         files: [],
         project: new Project({
           manipulationSettings,
-          compilerOptions: { allowJs: true }
+          compilerOptions: { allowJs: true },
         }),
-        detectNewLineKind
+        detectNewLineKind,
       };
     }
 
@@ -160,7 +160,7 @@ function main(filePaths, listDifferent) {
             newLineKind:
               crLfWeight > 0
                 ? NewLineKind.CarriageReturnLineFeed
-                : NewLineKind.LineFeed
+                : NewLineKind.LineFeed,
           });
         }
         project.saveSync();
@@ -176,17 +176,13 @@ function main(filePaths, listDifferent) {
  */
 function getManipulationSettings(ec) {
   return {
-    indentationText:
-      ec.indent_style === "tab"
-        ? IndentationText.Tab
-        : ec.tab_width === 2
-        ? IndentationText.TwoSpaces
-        : IndentationText.FourSpaces,
+    indentationText: IndentationText.TwoSpaces,
     newLineKind:
       ec.end_of_line === "crlf"
         ? NewLineKind.CarriageReturnLineFeed
         : NewLineKind.LineFeed,
-    quoteKind: QuoteKind.Single
+    quoteKind: QuoteKind.Single,
+    // useTrailingCommas: true,
   };
 }
 
@@ -208,7 +204,7 @@ The {yellow --list-different} flag prints a list of files with unorganized impor
 function serializeImports(sourceFile) {
   return sourceFile
     .getImportDeclarations()
-    .map(importDeclaration => importDeclaration.getText())
+    .map((importDeclaration) => importDeclaration.getText())
     .join("")
     .replace(/'/g, '"')
     .replace(/\s+/g, "\t")
